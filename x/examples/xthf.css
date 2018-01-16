@@ -1,0 +1,137 @@
+/* xthf-fix-tbl and xthf-abs-tbl are required for xTableHeaderFixed.
+   All other styles are for the demos. */
+
+table.xthf-fix-tbl {
+  left: 0;
+  top: 0;
+  position: fixed;
+  overflow: hidden;
+  visibility: hidden;
+}
+table.xthf-abs-tbl {
+  position: absolute;
+  overflow: hidden;
+  visibility: hidden;
+}
+@media print {
+  table.xthf-fix-tbl,
+  table.xthf-abs-tbl {
+    display: none;
+  }
+}
+
+/* The scrollable containers for demos 2 and 3.
+   position can be absolute or relative.
+   width can be auto or a pixel value. */
+
+#demo2-container {
+  position: relative;
+  width: auto;
+  height: 300px;
+  overflow: auto;
+  background-color: #FFF;
+  border: 1px solid #596380;
+  border-left: 6px solid #596380;
+}
+
+#demo3-container {
+  position: relative;
+  width: 860px;
+  height: 250px;
+  background-color: #ddd;
+  overflow: auto;
+}
+
+/* Table with site theme. */
+
+table.xthf-site {
+  text-align: center;
+  border-spacing: 0;
+  border-left: 8px solid #596380;
+  font-size: smaller;
+}
+table.xthf-site caption {
+  padding: 3px 10px;
+  font-size: larger;
+  font-weight: bold;
+  color: #FFF;
+  background: #BF8660;
+  border: 1px solid #596380;
+  border-left: 8px solid #596380;
+}
+table.xthf-site thead {
+  background: #CFD4E6;
+}
+table.xthf-site th {
+  color: #000;
+  font-weight: bold;
+}
+table.xthf-site td,
+table.xthf-site th {
+  padding: 6px 10px;
+  border: 1px solid #596380;
+  text-align: center;
+}
+
+/* Table with green theme.
+   663, 996, CC9, FFC */
+
+table.xthf-green {
+  text-align: center;
+  border-spacing: 0;
+  border-left: 1px solid #663;
+  border-top: 6px solid #663;
+  font-size: smaller;
+}
+table.xthf-green caption {
+  /* this table has no caption */
+}
+table.xthf-green thead {
+  background: #CC9;
+}
+table.xthf-green th {
+  color: #663;
+  font-weight: bold;
+}
+table.xthf-green td,
+table.xthf-green th {
+  padding: 6px 10px;
+  text-align: center;
+  border-right: 1px solid #663;
+  border-bottom: 1px solid #663;
+}
+
+/* Table with blue theme.
+   366, 699, 9CC, CFF */
+
+table.xthf-blue {
+  text-align: center;
+  border-spacing: 0;
+  border-left: 4px solid #366;
+  border-top: 1px solid #366;
+  font-size: smaller;
+}
+table.xthf-blue caption {
+  padding: 3px 10px;
+  font-size: larger;
+  font-weight: bold;
+  color: #366;
+  background: #CFF;
+  border: 4px solid #366;
+  border-bottom: none;
+}
+table.xthf-blue thead {
+  background: #9CC;
+}
+table.xthf-blue thead td,
+table.xthf-blue th {
+  color: #366;
+  font-weight: bold;
+}
+table.xthf-blue td,
+table.xthf-blue th {
+  padding: 6px 10px;
+  text-align: center;
+  border-right: 1px solid #366;
+  border-bottom: 1px solid #366;
+}

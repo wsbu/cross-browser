@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<x_symbol id='xCen'>
+
+<sources>
+  <src><file>xcen.js</file><note><![CDATA[Default.]]></note></src>
+</sources>
+
+<copyright>Copyright 2009 Michael Foster (Cross-Browser.com)</copyright>
+<license>Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL</license>
+<groups>
+  <grp>Position</grp>
+</groups>
+<type>Function</type>
+
+<description><![CDATA[Center a positioned element within the current client window space.]]></description>
+
+<syntax>xCen(e)</syntax>
+
+<parameters>
+  <par>
+    <name>e</name>
+    <note><![CDATA[An existing absolutely positioned dom element (or an id to such an element).]]></note>
+  </par>
+</parameters>
+
+<dependencies>
+  <dep>xGetElementById</dep>
+  <dep>xClientWidth</dep>
+  <dep>xClientHeight</dep>
+  <dep>xScrollLeft</dep>
+  <dep>xScrollTop</dep>
+  <dep>xMoveTo</dep>
+</dependencies>
+
+<demos>
+  <demo>
+    <url>http://cross-browser.com/toys/</url>
+    <note><![CDATA[Index of all X demos.]]></note>
+  </demo>
+</demos>
+
+<comments>
+  <comment><date>24Mar09</date><author>mf</author><note><![CDATA[Also see xCenter]]></note></comment>
+</comments>
+
+<revisions>
+  <rev>
+    <num>1</num><date>24Mar09</date><author>mf</author><note><![CDATA[Initial release.]]></note>
+  </rev>
+</revisions>
+
+</x_symbol>

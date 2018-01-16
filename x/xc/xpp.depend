@@ -1,0 +1,15 @@
+# depslib dependency file v1.0
+1259437072 source:c:\documents and settings\mike\my documents\www\cross-browser.com\x\xc\xpp.c
+	"xpp.h"
+	"util.h"
+
+1259474028 c:\documents and settings\mike\my documents\www\cross-browser.com\x\xc\xpp.h
+	<stdio.h>
+
+1237759942 c:\documents and settings\mike\my documents\www\cross-browser.com\x\xc\util.h
+	<string.h>
+	<ctype.h>
+
+1237762916 source:c:\documents and settings\mike\my documents\www\cross-browser.com\x\xc\util.c
+	"util.h"
+

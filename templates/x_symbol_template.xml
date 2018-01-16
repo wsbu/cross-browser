@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<x_symbol id=''>
+
+<sources>
+  <src><sym></sym><file></file><note><![CDATA[]]></note></src>
+</sources>
+
+<copyright>Copyright [your date] [your name] ([your URL])</copyright>
+
+<license>Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL</license>
+
+<!-- Valid values for a grp node are: Animation, DOM, Debug, Event, Image, Iteration, Misc, Position, Size, String, Style, Table, UI or Window. -->
+<groups>
+  <grp></grp>
+</groups>
+
+<!-- Valid values for the type node are: Var, Object, Property, Method or Function. -->
+<type></type>
+
+<description><![CDATA[]]></description>
+
+<syntax></syntax>
+
+<parameters>
+  <par><name></name><note><![CDATA[]]></note></par>
+  <par><name></name><note><![CDATA[]]></note></par>
+</parameters>
+
+<properties>
+  <prop><name></name><note><![CDATA[]]></note></prop>
+  <prop><name></name><note><![CDATA[]]></note></prop>
+</properties>
+
+<methods>
+  <meth><name></name><note><![CDATA[]]></note></meth>
+  <meth><name></name><note><![CDATA[]]></note></meth>
+</methods>
+
+<return><![CDATA[]]></return>
+
+<dependencies>
+  <dep></dep>
+  <dep></dep>
+</dependencies>
+
+<demos>
+  <demo><url></url><note><![CDATA[]]></note></demo>
+  <demo><url></url><note><![CDATA[]]></note></demo>
+</demos>
+
+<tests>
+  <test><date></date><author></author><url></url><note><![CDATA[]]></note></test>
+  <test><date></date><author></author><url></url><note><![CDATA[]]></note></test>
+</tests>
+
+<comments>
+  <comment><date></date><author></author><note><![CDATA[]]></note></comment>
+  <comment><date></date><author></author><note><![CDATA[]]></note></comment>
+</comments>
+
+<revisions>
+  <rev><num></num><date></date><author></author><note><![CDATA[]]></note></rev>
+  <rev><num></num><date></date><author></author><note><![CDATA[]]></note></rev>
+</revisions>
+
+</x_symbol>

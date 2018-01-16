@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<x_symbol id='xTableHeaderFixed'>
+
+<sources>
+  <src><sym>xTableHeaderFixed</sym><file>xtableheaderfixed.js</file><note><![CDATA[]]></note></src>
+</sources>
+
+<copyright>Copyright 2006-2009 Michael Foster (Cross-Browser.com)</copyright>
+<license>Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL</license>
+
+<groups>
+  <grp>Table</grp>
+</groups>
+
+<type>Object</type>
+
+<description><![CDATA[xTableHeaderFixed is an unobtrusive table enhancement. It makes a copy of a table's THEAD section. While the table is visible in its container the THEAD copy will be fixed to the top of the container, so you can scroll up and down in a long table and the header will always be visible. The container can be a window or a scrollable element. The position and size of the THEAD copy will be adjusted when the window is resized. You only need to instantiate one xTableHeaderFixed object for each group of tables that have the same styling - and so those tables should have a common className, which you pass to the constructor. You must assign all of the table's styles relative to this className so that the THEAD copy will be styled just like it. View the source of a demo page to see the required CSS. It takes the widths of all THs (not TDs) in the THEAD and assigns them to the corresponding THs in the THEAD copy. Notice table 3 of the demos, where there are colspan'd TDs. TDs are used here so those widths would not get assigned to the THEAD copy, because it is the TH widths which correspond to the widths of the table's columns. When instantiating, you do not have to keep a reference to the object - it keeps a reference to itself, but if you plan on calling the init method later then you'll need to keep a reference to the object.]]></description>
+
+<syntax>new xTableHeaderFixed(tableClass, container, isWin)</syntax>
+
+<parameters>
+  <par><name>tableClass</name><note><![CDATA[The enhancement will be applied to all tables having this className.]]></note></par>
+  <par><name>container</name><note><![CDATA[A window object, or a scrollable element's ID string or object reference.]]></note></par>
+  <par><name>isWin</name><note><![CDATA[Set to true if "container" is a window object, else omit.]]></note></par>
+</parameters>
+
+<methods>
+  <meth><name>init(tableClass, container, isWin)</name><note><![CDATA[If you did not pass arguments on instantiation then use this method to initialize the object - or you can call this method to re-initialize the object, with different arguments, any number of times.]]></note></meth>
+</methods>
+
+<dependencies>
+  <dep>xGetElementById</dep>
+  <dep>xLeft</dep>
+  <dep>xTop</dep>
+  <dep>xPageX</dep>
+  <dep>xPageY</dep>
+  <dep>xScrollLeft</dep>
+  <dep>xScrollTop</dep>
+  <dep>xWidth</dep>
+  <dep>xGetComputedStyle</dep>
+  <dep>xGetElementsByTagName</dep>
+  <dep>xGetElementsByClassName</dep>
+  <dep>xAddEventListener</dep>
+  <dep>xRemoveEventListener</dep>
+</dependencies>
+
+<demos>
+  <demo><url>http://cross-browser.com/x/examples/xthf1.php</url><note><![CDATA[Demo 1 - where the container is the window object.]]></note></demo>
+  <demo><url>http://cross-browser.com/x/examples/xthf2.php</url><note><![CDATA[Demo 2 - where the container is a scrollable Element object.]]></note></demo>
+  <demo><url>http://cross-browser.com/x/examples/xthf3.php</url><note><![CDATA[Demo 3 - where the tables are served via Ajax.]]></note></demo>
+</demos>
+
+<comments>
+  <comment><date>17Dec09</date><author>mf</author><note><![CDATA[There is a problem in IE8. You can see it in demo 2. I think this is related to the border on the scrollable container. See the TODO comment in the code. This needs some work.]]></note></comment>
+  <comment><date>6Nov09</date><author>mf</author><note><![CDATA[I ran into an IE bug while working on this. I was using IE7 but I think I remember seeing the same thing in IE6. When setting "visibility:hidden" on a programmatically created table, the table would be hidden except for its borders, which were visible - until later when the table was given "visibility:visible" and then "visibility:hidden" again.]]></note></comment>
+  <comment><date>17Jul09</date><author>mf</author><note><![CDATA[I found something that has probably been giving people problems. It expects you to have th's in the thead, not td's.]]></note></comment>
+  <comment><date>3Apr09</date><author>mf</author><note><![CDATA[Wow, this thread is still going at "http://www.sitepoint.com/forums/showthread.php?t=442068"! There are also several threads on this object at the X Forums (here's a good one: "http://cross-browser.com/forums/viewtopic.php?id=611").]]></note></comment>
+</comments>
+
+<revisions>
+  <rev><num>7</num><date>17Dec09</date><author>mf</author><note><![CDATA[It has been adapted to work with Ajax apps.]]></note></rev>
+  <rev><num>6</num><date>12Nov09</date><author>mf</author><note><![CDATA[Rev 6 is in the works.]]></note></rev>
+  <rev><num>5</num><date>8Nov09</date><author>mf</author><note><![CDATA[I ended up with three different variations of this object, so now I've combined them into one. The original "catfish" version is still available: "http://cross-browser.com/x/examples/xthf0.html".]]></note></rev>
+  <rev><num>-</num><date>25Sep09</date><author>mf</author><note><![CDATA[See xTableHeaderFixed2 which implements this in a scrollable container.]]></note></rev>
+  <rev><num>4</num><date>27Jul09</date><author>mf</author><note><![CDATA[No longer adding tableBorder and thBorder (I don't know why I thought that was needed in the first place). These parameters are now not needed, but I'll leave them for now, to be backwards-compatible.]]></note></rev>
+  <rev><num>3</num><date>3Apr09</date><author>mf</author><note><![CDATA[Let each table have different styling. Found a bug while doing this: the generated id of fixed table was not unique with multiple xTableHeaderFixed objects on a page.]]></note></rev>
+  <rev><num>2</num><date>21May07</date><author>mf</author><note><![CDATA[The loop adding tables to the 'tables' array was starting on the wrong index. Thanks very much to Thiago for finding this bug and submitting a fix.]]></note></rev>
+  <rev><num>-</num><date>15Feb07</date><author>mf</author><note><![CDATA[added a "@media print" rule so the fixed container will not print. Thanks to bunsen!]]></note></rev>
+  <rev><num>1</num><date>30Jan07</date><author>mf</author><note><![CDATA[Initial inclusion in X.]]></note></rev>
+</revisions>
+
+</x_symbol>

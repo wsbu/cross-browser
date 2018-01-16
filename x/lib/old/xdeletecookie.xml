@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<x_symbol id='xDeleteCookie'>
+
+<sources>
+  <src><file>xdeletecookie.js</file><note><![CDATA[Default.]]></note></src>
+</sources>
+
+<copyright>Copyright 2001-2008 Michael Foster (Cross-Browser.com)</copyright>
+<license>Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL</license>
+<groups>
+  <grp>Misc</grp>
+</groups>
+<type>Function</type>
+
+<description><![CDATA[Delete a previously set cookie.]]></description>
+
+<syntax>xDeleteCookie(name, path, domain)</syntax>
+
+<parameters>
+  <par>
+    <name>name</name>
+    <note><![CDATA[]]></note>
+  </par>
+  <par>
+    <name>path</name>
+    <note><![CDATA[]]></note>
+  </par>
+  <par>
+    <name>domain</name>
+    <note><![CDATA[]]></note>
+  </par>
+</parameters>
+
+<dependencies>
+  <dep>xGetCookie</dep>
+  <dep>xSetCookie</dep>
+</dependencies>
+
+<demos>
+  <demo>
+    <url>http://cross-browser.com/toys/</url>
+    <note><![CDATA[Index of all X demos.]]></note>
+  </demo>
+</demos>
+
+<comments>
+  <comment><date>6May09</date><author>mf</author><note><![CDATA[This function is DEPRECATED. See: xCookie. See: http://cross-browser.com/forums/viewtopic.php?id=504]]></note></comment>
+</comments>
+
+<revisions>
+  <rev>
+    <num>5</num>
+    <date>19Nov08</date>
+    <author>mf</author>
+    <note><![CDATA[Added the 'domain' parameter. Added it as last parameter to be backwards compatible with r4. Reimplemented this to just call xSetCookie.]]></note>
+  </rev>
+  <rev>
+    <num>4</num>
+    <date>27Jan05</date>
+    <author>mf</author>
+    <note><![CDATA[Bug-fix from Jeff Rose.]]></note>
+  </rev>
+  <rev>
+    <num>3</num>
+    <date>2001</date>
+    <author>mf</author>
+    <note><![CDATA[initial implementation (based on code from Netscape Javascript Guide)]]></note>
+  </rev>
+</revisions>
+
+</x_symbol>

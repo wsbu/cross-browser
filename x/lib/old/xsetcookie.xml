@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<x_symbol id='xSetCookie'>
+
+<sources>
+  <src><file>xsetcookie.js</file><note><![CDATA[Default.]]></note></src>
+</sources>
+
+<copyright>Copyright 2001-2008 Michael Foster (Cross-Browser.com)</copyright>
+<license>Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL</license>
+<groups>
+  <grp>Misc</grp>
+</groups>
+<type>Function</type>
+
+<description><![CDATA[Set a name/value in a cookie.]]></description>
+
+<syntax>xSetCookie(name, value, expire, path)</syntax>
+
+<parameters>
+  <par>
+    <name>name</name>
+    <note><![CDATA[cookie name]]></note>
+  </par>
+  <par>
+    <name>value</name>
+    <note><![CDATA[cookie value]]></note>
+  </par>
+  <par>
+    <name>expire</name>
+    <note><![CDATA[expiry date (optional), if not supplied the cookie will expire after the current session.]]></note>
+  </par>
+  <par>
+    <name>path</name>
+    <note><![CDATA[access path (optional), if not supplied '/' will be used.]]></note>
+  </par>
+  <par>
+    <name>domain</name>
+    <note><![CDATA[access domain (optional)]]></note>
+  </par>
+</parameters>
+
+<demos>
+  <demo>
+    <url>http://cross-browser.com/toys/</url>
+    <note><![CDATA[Index of all X demos.]]></note>
+  </demo>
+</demos>
+
+<comments>
+  <comment><date>6May09</date><author>mf</author><note><![CDATA[This function is DEPRECATED. See: xCookie. See: http://cross-browser.com/forums/viewtopic.php?id=504]]></note></comment>
+</comments>
+
+<revisions>
+  <rev>
+    <num>4</num>
+    <date>19Nov08</date>
+    <author>mf</author>
+    <note><![CDATA[Added the 'domain' parameter. Added it as last parameter to be backwards compatible with r3.]]></note>
+  </rev>
+  <rev>
+    <num>3</num>
+    <date></date>
+    <author>mf</author>
+    <note><![CDATA[initial implementation (based on code from Netscape Javascript Guide)]]></note>
+  </rev>
+</revisions>
+
+</x_symbol>

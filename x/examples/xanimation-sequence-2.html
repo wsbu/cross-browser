@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>X Library Demo</title>
+<meta name='author' content='Mike Foster (Cross-Browser.com)'>
+<meta name='description' content='Cross-Browser Javascript Libraries and Applications'>
+<meta name='license' content='Distributed under the terms of the GNU LGPL (gnu.org)'>
+<script type='text/javascript' src='../../offline.js'></script>
+<link rel='stylesheet' type='text/css' href='../../css/v3.css'>
+<style type='text/css'>
+#anim-ele {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 10px;
+  height: 10px;
+  border: 1px solid #596380;
+  background-color: #CFD4E6;
+}
+#btn-start {
+  margin-right: 20px;
+}
+</style>
+<script type='text/javascript' src='../x.js'></script>
+<script type='text/javascript'>
+
+xAddEventListener(window, 'load',
+  function() {
+    xGetElementById('btn-start').onclick = demo;
+    xGetElementById('btn-stop').onclick = demoStop;
+  }, false
+);
+
+function demo()
+{
+  var
+    s = 10,      // size 1
+    sx = 20 * s,  // size 2
+    s2 = sx / 2,
+    cw = xClientWidth(),
+    cw2 = cw / 2,
+    ch = xClientHeight(),
+    ch2 = ch / 2;
+    cm = [cw2-s2,ch2-s2, sx,sx, 750],
+    cp = [cw2-s2,ch2-s2, sx,sx, 250],
+    seq = [
+      [0,0, cw,ch, 500],  // goto 0,0 and resize to cw,ch in 500 ms
+      [0,0, cw,ch, 1500], // pause 2000 ms (I'm gonna have to come up with something better than this for "pause")
+      cm,
+      cp,
+      [cw-s,0, s,s, 750],
+      [cw-s,0, s,s, 250],
+      cm,
+      cp,
+      [0,ch-s, s,s, 750],
+      [0,ch-s, s,s, 250],
+      cm,
+      cp,
+      [cw-s,ch-s, s,s, 750],
+      [cw-s,ch-s, s,s, 250],
+      cm,
+      cp,
+      [0,0, cw,ch, 500],
+      [0,0, cw,ch, 1500],
+      [0,0, 10,10, 500]
+    ];
+
+  demo.xa.pause();
+  xStyle('visibility', 'hidden', 'btn-start');
+  demo.xa.sizeLine('anim-ele', seq, 3, 0, demoEnd);
+}
+
+demo.xa = new xAnimation(4); // prepare for a 4-D animation
+
+function demoStop()
+{
+  demo.xa.pause();
+  xStyle('visibility', 'visible', 'btn-start');
+}
+
+function demoEnd()
+{
+  xStyle('visibility', 'visible', 'btn-start');
+  setTimeout(demo2, 1);
+  return false;
+}
+
+function demo2()
+{
+  var
+    a = 10, b = 2*a, c = 3*a, t = 500,
+    seq = [
+      [0,0,c,a,t],
+      [b,0,a,a,t],
+      [b,0,a,c,t],
+      [b,b,a,a,t],
+      [0,b,c,a,t],
+      [0,b,a,a,t],
+      [0,0,a,c,t],
+      [0,0,a,a,t]
+    ];
+
+  demo.xa.sizeLine('anim-ele', seq, 1, 0, demo2End);
+}
+
+function demo2End()
+{
+  return true;
+}
+
+// xAnimation r4.1, Copyright 2006-2009 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+/**
+ This is an experimental version of xAnimation.
+ @param na Number of axes.
+ @param r Timer resolution.
+*/
+function xAnimation(na, r)
+{
+  var ai, i = this;
+  i.res = r || 10;
+  i.a = []; // axis array
+  // axis objects
+  for (ai = 0; ai < na; ++ai) {
+    i.a[ai] = {
+      v:0, // instantaneous value
+      i:0, // initial value
+      t:0, // target value
+      d:0  // displacement
+    };
+  }
+}
+// The caller must set the axes' initial and target values before calling init.
+xAnimation.prototype.init = function(e,t,or,ot,oe,at,b)
+{
+  var ai, i = this;
+  i.e = xGetElementById(e);
+  i.t = t;
+  i.or = or; // onRun
+  i.ot = ot; // onTarget
+  i.oe = oe; // onEnd
+  i.at = at || 0; // acceleration type
+  i.v = xAnimation.vf[i.at];
+  i.qc = 1 + (b || 0); // quarter-cycles
+  i.fq = 1 / i.t; // frequency
+  if (i.at > 0 && i.at < 4) {
+    i.fq *= i.qc * Math.PI;
+    if (i.at == 1 || i.at == 2) { i.fq /= 2; }
+  }
+  // displacements
+  for (ai = 0; ai < i.a.length; ++ai) {
+    i.a[ai].d = i.a[ai].t - i.a[ai].i;
+  }
+};
+xAnimation.prototype.run = function(r)
+{
+  var ai, qcm2, rep, i = this;
+  if (!r) { i.t1 = new Date().getTime(); }
+  if (!i.tmr) i.tmr = setInterval(
+    function() {
+      i.et = new Date().getTime() - i.t1; // elapsed time
+      if (i.et < i.t) {
+        // instantaneous values
+        i.f = i.v(i.et * i.fq);
+        for (ai = 0; ai < i.a.length; ++ai) {
+          i.a[ai].v = i.a[ai].d * i.f + i.a[ai].i;
+        }
+        i.or(i); // call onRun
+      }
+      else { // target time reached
+        clearInterval(i.tmr);
+        i.tmr = null;
+        qcm2 = i.qc % 2;
+        for (ai = 0; ai < i.a.length; ++ai) {
+          if (qcm2) { i.a[ai].v = i.a[ai].t; }
+          else { i.a[ai].v = i.a[ai].i; }
+        }
+        i.ot(i); // call onTarget
+        // handle onEnd
+        rep = false;
+        if (typeof i.oe == 'function') { rep = i.oe(i); }
+        else if (typeof i.oe == 'string') { rep = eval(i.oe); }
+        if (rep) { i.resume(1); }
+      }
+    }, i.res
+  );
+};
+xAnimation.vf = [ // velocity functions
+  function(r){return r;},
+  function(r){return Math.abs(Math.sin(r));},
+  function(r){return 1-Math.abs(Math.cos(r));},
+  function(r){return (1-Math.cos(r))/2;},
+  function(r) {return (1.0 - Math.exp(-r * 6));}
+];
+xAnimation.prototype.pause = function()
+{
+  clearInterval(this.tmr);
+  this.tmr = null;
+};
+xAnimation.prototype.resume = function(fs)
+{
+  if (typeof this.tmr != 'undefined' && !this.tmr) {
+    this.t1 = new Date().getTime();
+    if (!fs) {this.t1 -= this.et;}
+    this.run(!fs);
+  }
+};
+
+// xAnimation.sizeLine r1, Copyright 2009 Michael Foster (Cross-Browser.com)
+// Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL
+
+/**
+ This is experimental.
+ @param e ID string or object reference of the element to be animated.
+ @param s A "sequence" array.
+ @param a Acceleration type.
+ @param b Number of bounces.
+ @param oe onEnd handler. Return true to repeat sequence.
+*/
+xAnimation.prototype.sizeLine = function(e,s,a,b,oe)
+{
+  var i = this, si = 0;
+  prep();
+  i.run();
+  function h(i) { // onRun and onTarget
+    // set position
+    i.e.style.left = Math.round(i.a[0].v) + 'px';
+    i.e.style.top = Math.round(i.a[1].v) + 'px';
+    // set size
+    xWidth(i.e, Math.round(i.a[2].v));
+    xHeight(i.e, Math.round(i.a[3].v));
+  }
+  // onEnd handler
+  function end(i) {
+    if (++si < s.length) {
+      prep();
+      return true; // start next animation in sequence
+    }
+    else {
+      if (oe && oe(i)) {
+        si = 0;
+        prep();
+        return true; // restart sequence
+      }
+      return false; // stop
+    }
+  }
+  // prepare for the next animation in the sequence
+  function prep() {
+    // initial position
+    i.a[0].i = xLeft(e);
+    i.a[1].i = xTop(e);
+    // target position
+    i.a[0].t = Math.round(s[si][0]);
+    i.a[1].t = Math.round(s[si][1]);
+    // initial size
+    i.a[2].i = xWidth(e);
+    i.a[3].i = xHeight(e);
+    // target size
+    i.a[2].t = Math.round(s[si][2]);
+    i.a[3].t = Math.round(s[si][3]);
+    i.init(e,s[si][4],h,h,end,a,b);
+  }
+};
+
+</script>
+</head>
+<body><div id='topLinkCon'><a name='topofpg'>&nbsp;</a></div>
+<div id='leftColumn' class='column'> <!-- Begin left column -->
+<div class='leftContent'> <!-- Begin left content -->
+
+<script type='text/javascript'>insert_header(0, '../..');</script>
+
+<h2>xAnimation Experiment</h2>
+
+<h3>Overview</h3>
+<div>
+<p>This demo began as an experiment in combining <a href='http://cross-browser.com/x/lib/view.php?s=xAnimation.size'>xAnimation.size</a> and <a href='http://cross-browser.com/x/lib/view.php?s=xAnimation.line'>xAnimation.line</a> into a single animation function ("sizeLine" - I'm really good at coming up with cool names, eh?). I knew <a href='http://cross-browser.com/x/lib/view.php?s=xAnimation'>xAnimation</a> only supported three animation axes, whereas sizeLine was going to need four axes: two for position and two for size. So this demo also includes an experimental version of xAnimation which supports <i>any number of axes</i>! While I was having so much fun I also threw in the sequence feature I first experimented with <a href='xanimation-sequence-1.php'>here</a>. I'm thinking this sequence feature could be incorporated into xAnimation itself. This is too much fun!</p>
+<p>I hope you enjoy playing with this new toy as much as I have - but remember, it is still very experimental and subject to change.</p>
+<p>Mike Foster<br>25 Nov 2009</p>
+</div>
+
+<h3>Demo</h3>
+<div>
+<p>
+  <button id='btn-start'>Start Demo</button>
+  <button id='btn-stop'>Stop Demo</button>
+</p>
+</div>
+
+<h2>Off-Topic, But Interesting...</h2>
+
+<h3>Flute Acoustics</h3>
+<div>
+<p>I love the <a href='http://www.phys.unsw.edu.au/music/flute/'>UNSW Flute Acoustics</a> site!</p>
+</div>
+
+<h3>Finite State Machines (FSM)</h3>
+<div>
+<p>This is an interesting article on <a href='http://ai-depot.com/FiniteStateMachines/FSM.html'>Finite State Machines</a> - from a different perspective.</p>
+</div>
+
+<h3>Vulcan Orienteering Club</h3>
+<div>
+<p>We've been to several orienteering meets, all expertly organized and managed by the <a href='http://www.vulcanorienteering.org/'>Vulcan Orienteering Club</a>.</p>
+<p>If you've never tried this you really should - it's a blast!</p>
+</div>
+
+</div> <!-- end leftContent -->
+
+<script type='text/javascript'>insert_footer('../..');</script>
+
+</div> <!-- end leftColumn -->
+
+<div id='rightColumn' class='column'>
+<div class='rightContent'>
+
+<script type='text/javascript'>insert_sidebar('../..');</script>
+
+</div> <!-- end rightContent -->
+</div> <!-- end rightColumn -->
+
+<div id='anim-ele'>
+</div>
+
+</body>
+</html>

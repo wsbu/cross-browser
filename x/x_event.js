@@ -1,0 +1,9 @@
+/* Built from X 4.19 by xag 0.02 beta on 23Dec09 */
+xLibrary={version:"4.19",license:"GNU LGPL",url:"http://cross-browser.com/"};function xEvent(evt){var e=evt||window.event;if(!e){return}this.type=e.type;this.target=e.target||e.srcElement;this.relatedTarget=e.relatedTarget;
+/*@cc_on if (e.type == 'mouseover') this.relatedTarget = e.fromElement;
+  else if (e.type == 'mouseout') this.relatedTarget = e.toElement; @*/
+if(xDef(e.pageX)){this.pageX=e.pageX;this.pageY=e.pageY}else{if(xDef(e.clientX)){this.pageX=e.clientX+xScrollLeft();this.pageY=e.clientY+xScrollTop()}}if(xDef(e.offsetX)){this.offsetX=e.offsetX;this.offsetY=e.offsetY}else{if(xDef(e.layerX)){this.offsetX=e.layerX;this.offsetY=e.layerY}else{this.offsetX=this.pageX-xPageX(this.target);this.offsetY=this.pageY-xPageY(this.target)}}this.keyCode=e.keyCode||e.which||0;this.shiftKey=e.shiftKey;this.ctrlKey=e.ctrlKey;this.altKey=e.altKey;if(typeof e.type=="string"){if(e.type.indexOf("click")!=-1){this.button=0}else{if(e.type.indexOf("mouse")!=-1){this.button=e.button;
+/*@cc_on if (e.button & 1) this.button = 0;
+      else if (e.button & 4) this.button = 1;
+      else if (e.button & 2) this.button = 2; @*/
+}}}}function xAddEventListener(d,c,b,a){if(!(d=xGetElementById(d))){return}c=c.toLowerCase();if(d.addEventListener){d.addEventListener(c,b,a||false)}else{if(d.attachEvent){d.attachEvent("on"+c,b)}else{var f=d["on"+c];d["on"+c]=typeof f=="function"?function(e){f(e);b(e)}:b}}}function xPreventDefault(a){if(a&&a.preventDefault){a.preventDefault()}else{if(window.event){window.event.returnValue=false}}}function xRemoveEventListener(d,c,b,a){if(!(d=xGetElementById(d))){return}c=c.toLowerCase();if(d.removeEventListener){d.removeEventListener(c,b,a||false)}else{if(d.detachEvent){d.detachEvent("on"+c,b)}else{d["on"+c]=null}}}function xStopPropagation(a){if(a&&a.stopPropagation){a.stopPropagation()}else{if(window.event){window.event.cancelBubble=true}}};

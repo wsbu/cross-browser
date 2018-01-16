@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1236567441 source:c:\documents and settings\mike\my documents\www\cross-browser.com\x\xc\xc.c
+	"xc.h"
+
+1236567863 c:\documents and settings\mike\my documents\www\cross-browser.com\x\xc\xc.h
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	<time.h>
+	<ctype.h>
+	<dirent.h>
+	<io.h>
+	<search.h>
+

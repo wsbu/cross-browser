@@ -1,0 +1,120 @@
+/* 
+ xFenster r16 - r19
+ These styles are dynamically assigned by xFenster.
+ Do not apply them to any html.
+*/
+
+.xfCon { /* overall container */
+  position:absolute;
+  visibility:hidden;
+  overflow:hidden;
+  margin:0;
+  padding:0;
+  font-size:x-small;
+  color:#000;
+  background:#eee;
+  cursor:default;
+  border:1px solid #394360;
+/*
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -khtml-border-radius: 3px;
+*/
+}
+
+.xfTBar, .xfTBarF, .xfSBar, .xfSBarF {
+  position:absolute;
+  height:1.2em;
+  overflow:hidden;
+  font-size:x-small;
+  margin:0;
+  padding:1px 4px;
+  z-index:9;
+}
+
+.xfTBar, .xfTBarF {
+  cursor: move;
+/*
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-radius-topleft: 3px;
+  -khtml-border-radius-topleft: 3px;	
+  -webkit-border-top-right-radius: 3px;
+  -moz-border-radius-topright: 3px;
+  -khtml-border-radius-topright: 3px;	
+*/
+}
+
+.xfTBar { /* titlebar default */
+  font-weight:normal;
+  color:#000;
+  background:#99a3c0;
+}
+.xfTBarF { /* titlebar focused */
+  font-weight:bold;
+  color:#fff;
+  background:#596380;
+}
+
+.xfSBar, .xfSBarF {
+  color:#000;
+/*
+  -webkit-border-bottom-left-radius: 3px;
+  -moz-border-radius-bottomleft: 3px;
+  -khtml-border-radius-bottomleft: 3px;	
+  -webkit-border-bottom-right-radius: 3px;
+  -moz-border-radius-bottomright: 3px;
+  -khtml-border-radius-bottomright: 3px;	
+*/
+}
+
+
+.xfSBar { /* statusbar default */
+  background:#99a3c0;
+}
+.xfSBarF { /* statusbar focused */
+  background:#596380;
+}
+
+.xfNIco, .xfMIco, .xfOIco, .xfCIco, .xfRIco {
+  position:absolute;
+  overflow:hidden;
+  width:12px;
+  height:12px;
+  margin:0;
+  padding:0;
+  background:transparent;
+  cursor:pointer;
+  z-index:10;
+}
+.xfNIco { /* minimize icon */
+  background-image:url(../../images/xf_minimize_icon.gif);
+}
+.xfMIco { /* maximize icon */
+  background-image:url(../../images/xf_maximize_icon.gif);
+}
+.xfOIco { /* restore icon */
+  background-image:url(../../images/xf_restore_icon.gif);
+}
+.xfCIco { /* close icon */
+  background-image:url(../../images/xf_close_icon.gif);
+}
+.xfRIco { /* resize icon */
+  width:12px;
+  height:12px;
+  margin:0;
+  padding:0;
+  background:transparent;
+  cursor: se-resize;
+  background-image:url(../../images/xf_resize_icon.gif);
+}
+
+.xfClient { /* The 'client area' can be an IFRAME or a DIV */
+  position:absolute !important;
+  overflow:auto;
+  margin:0 !important;
+
+  padding:0 !important;
+
+  border:1px solid #394360;
+  z-index:5;
+}

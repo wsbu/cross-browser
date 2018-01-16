@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>X Library Demo</title>
+<meta name='author' content='Mike Foster (Cross-Browser.com)'>
+<meta name='description' content='Cross-Browser Javascript Libraries and Applications'>
+<meta name='license' content='Distributed under the terms of the GNU LGPL (gnu.org)'>
+<script type='text/javascript' src='../../offline.js'></script>
+<link rel='stylesheet' type='text/css' href='../../css/v3.css'>
+<link rel='stylesheet' type='text/css' href='xfenster.css'>
+<style type='text/css'>
+.xf-content {
+  padding:1em;
+}
+.xf-data {
+  display: none;
+}
+.clickable {
+  cursor: pointer;
+  text-decoration: underline;
+}
+table {
+  margin: 10px 0;
+}
+td, th {
+  text-align: left;
+  padding: .25em 1em 0 0;
+}
+</style>
+<script type='text/javascript' src='../x.js'></script>
+<script type='text/javascript' src='../lib/xenabledrag.js'></script>
+<script type='text/javascript' src='../lib/xcookie.js'></script>
+<script type='text/javascript' src='../lib/xfenster19.js'></script>
+<script type='text/javascript'>
+document.write("<style type='text/css'>.xFenster {display:none}</style>");
+
+xAddEventListener(window, 'load',
+  function() {
+    // read cookie and create fensters from the cookie data
+    xFensterMgr.load();
+    // register button click listener
+    b = xGetElementById('btnDelete');
+    b.onclick = function() { xFensterMgr.reset(); };
+    // register span click listeners
+    xGetElementsByClassName('clickable', document, 'span',
+      function(e) {
+        e.onclick = openOnClick;
+      }
+    );
+  }, false
+);
+
+function openOnClick()
+{
+  var a = this.id.split('-');
+  xFensterMgr.open('xf-obj-' + a[1], 'xf-data-' + a[2], this.innerHTML);
+  xFensterMgr.save();
+}
+
+function xfMove(xf, x, y)
+{
+  xf.status('x: ' + x + ', y: ' + y);
+  return true;
+}
+function xfResize(xf, w, h)
+{
+  xf.status('w: ' + w + ', h: ' + h);
+  return true;
+}
+function xfDragEnd(xf)
+{
+  xf.status('x: ' + xf.con.offsetLeft + ', y: ' + xf.con.offsetTop + ', w: ' + xf.con.offsetWidth + ', h: ' + xf.con.offsetHeight);
+  xFensterMgr.save();
+}
+
+/*
+ An example of an xFenster manager
+*/
+
+var xFensterMgr = {
+
+  // cookie name
+  cName : 'xFenster_1',
+  // record and field delimiters
+  RD : '~',
+  FD : '|',
+
+  // fid - an id for the div which xFenster will create
+  // did - data div id
+  // x,y,w,h are optional
+  open : function(fid, did, title, x, y, w, h) {
+    var d, xf = xFenster.instances;
+    if (xf[fid]) { // if it already exists
+      xf[fid].title(title);
+      xf[fid].show();
+    }
+    else { // it doesn't yet exist so create it
+      new xFenster(new this.xfArg(fid, title, x, y, w, h));
+      //this.save();
+    }
+    d = xGetElementById(did);
+    if (d) {
+      xf[fid].client.innerHTML = d.innerHTML;
+    }
+    xf[fid].app_data_ele_id = did;
+    xf[fid].app_title_str = title;
+  },
+
+  //                  0      1        2    3    4    5    6
+  // Cookie format: fid FD did FD title FD x FD y FD w FD h RD...
+  // There are no spaces in the cookie string. The spaces in the above are
+  // only for readability.
+  load : function() {
+    var c, r, f, i, j, d = [];
+    c = xCookie.get(this.cName);
+    if (c) {
+      r = c.split(this.RD); // split into records
+      for (i = 0; i < r.length; ++i) {
+        f = r[i].split(this.FD); // split into fields
+        // read 7 fields, the first 3 are strings, the rest are numbers
+        for (j = 0; j < 7 && j < f.length; ++j) {
+          d[j] = j < 3 ? f[j] : parseInt(f[j]);
+        }
+        if (d.length == 7) {
+          // create fensters from the cookie data
+          this.open(d[0], d[1], d[2], d[3], d[4], d[5], d[6]);
+        }
+        d.length = 0;
+      }
+    }
+  },
+
+  //
+  save : function() {
+    var d, c = '', i, o = xFenster.instances;
+    for (i in o) {
+      if (o.hasOwnProperty(i) && o[i] && !o[i].minimized && !o[i].hidden) {
+        if (c.length) {
+          c += this.RD;
+        }
+        c += i + this.FD;
+        c += o[i].app_data_ele_id + this.FD;
+        c += o[i].app_title_str + this.FD;
+        c += o[i].con.offsetLeft + this.FD;
+        c += o[i].con.offsetTop + this.FD;
+        c += o[i].con.offsetWidth + this.FD;
+        c += o[i].con.offsetHeight;
+      }
+    }
+    d = new Date();
+    d.setTime(d.getTime() + (1000 * 60 * 60 * 24 * 365)); // now + 1 yr
+    xCookie.set(this.cName, c, d);
+  },
+
+  // object used as the argument to the xFenster constructor
+  xfArg : function(fid, title, x, y, w, h) {
+    var ofs = 30 * xFensterMgr.argCount++;
+    this.clientId = fid;
+    this.iniTitle = title;
+    this.iniW = w || 400;
+    this.iniH = h || 250;
+    this.iniX = x || (ofs + ((xClientWidth() - this.iniW) / 2));
+    this.iniY = y || (ofs + ((xClientHeight() - this.iniH) / 2));
+    this.conPad = 1;
+    this.conBor = 1;
+    this.cliBor = 1;
+    this.fnMove = xfMove;
+    this.fnResize = xfResize;
+    this.fnDragEnd = xfDragEnd;
+  },
+
+  //
+  reset : function() {
+    xCookie.del(this.cName);
+  }
+}; // end xFensterMgr
+xFensterMgr.argCount = 0; // static
+</script>
+</head>
+<body><div id='topLinkCon'><a name='topofpg'>&nbsp;</a></div>
+<div id='leftColumn' class='column'> <!-- Begin left column -->
+<div class='leftContent'> <!-- Begin left content -->
+
+<script type='text/javascript'>insert_header(0, '../..');</script>
+
+<h2>xFenster Demo 5</h2>
+
+<h3>Intro</h3>
+<div>
+  <p>This demo uses <a href='../lib/xfenster19.js'>xFenster rev 19.1</a>, which is still experimental. The constructor takes an object as an argument instead of a list of separate arguments. I also added an onDragEnd callback, and there have been other improvements.</p>
+  <p></p>
+  <p>This demo illustrates a fenster manager object. There are three fensters that can be opened on this page and there are six "data DIVs" on this page. Each fenster can load two DIVs' data. The fensters' positions and sizes are saved in a cookie and restored the next time you visit the page. You can <button id='btnDelete'>delete the cookie</button>.</p>
+  <table>
+    <tr><th>fenster 1</th><th>fenster 2</th><th>fenster 3</th></tr>
+    <tr><td><span id='xf-1-1' class='clickable'>xFenster Controls</span></td><td><span id='xf-2-3' class='clickable'>Kepler's Lament</span></td><td><span id='xf-3-5' class='clickable'>Farewell Address</span></td></tr>
+    <tr><td><span id='xf-1-2' class='clickable'>Declaration of Independence</span></td><td><span id='xf-2-4' class='clickable'>Texas Straight Talk</span></td><td><span id='xf-3-6' class='clickable'>Divine Metaphysics</span></td></tr>
+  </table>
+  <p>Last update: 5Apr09</p>
+</div>
+
+<h3>Off-topic but Interesting</h3>
+<div>
+  <h4>33Across</h4>
+  <p>The 33Across SocialDNA&trade; platform enables performance and brand marketers to <a href='http://33across.com/'>activate the Social Web!</a></p>
+  <h4>Open Flash Chart 2</h4>
+  <p><a href='http://teethgrinder.co.uk/open-flash-chart-2/'>Open Flash Chart 2</a> is a free, open-source Flash charting tool. We use it at 33Across and are extremely pleased with it.</p>
+</div>
+
+</div> <!-- end leftContent -->
+
+<script type='text/javascript'>insert_footer('../..');</script>
+
+</div> <!-- end leftColumn -->
+
+<div id='rightColumn' class='column'>
+<div class='rightContent'>
+
+<script type='text/javascript'>insert_sidebar('../..');</script>
+
+</div> <!-- end rightContent -->
+</div> <!-- end rightColumn -->
+
+<div id="xf-data-1" class='xf-data'>
+  <div class='xf-content'>
+    <p>You can <i>focus</i> me by clicking anywhere on me or on one of my child elements.</p>
+    <p>You can <i>move</i> me by dragging on the title bar.</p>
+    <p>You can <i>minimize</i> me by clicking on the <img src='../../images/xf_minimize_icon.gif'> icon.</p>
+    <p>You can <i>maximize</i> me by clicking on the <img src='../../images/xf_maximize_icon.gif'> icon or by double-clicking on the title bar.</p>
+    <p>You can <i>restore</i> me by clicking on the <img src='../../images/xf_restore_icon.gif'> icon.</p>
+    <p>You can <i>close</i> me by clicking on the <img src='../../images/xf_close_icon.gif'> icon.</p>
+    <p>You can <i>resize</i> me by dragging on the <img src='../../images/xf_resize_icon.gif'> icon.</p>
+  </div>
+</div>
+
+<div id="xf-data-2" class='xf-data'>
+  <div class='xf-content'>
+    <h4>Declaration of Independence</h4>
+    <p>In CONGRESS, July 4, 1776,</p>
+    <p>The unanimous Declaration of the thirteen united STATES of AMERICA,</p>
+    <p>When in the Course of human events, it becomes necessary for one people to dissolve the political bands which have connected them with another, and to assume among the powers of the earth, the separate and equal station to which the Laws of Nature and of Nature's God entitle them, a decent respect to the opinions of mankind requires that they should declare the causes which impel them to the separation.</p>
+    <p>We hold these truths to be self-evident, that all men are created equal, that they are endowed by their Creator with certain unalienable Rights, that among these are Life, Liberty, and the pursuit of Happiness. That to secure these rights, Governments are instituted among Men, deriving their just powers from the consent of the governed. That whenever any Form of Government becomes destructive of these ends, it is the Right of the People to alter or to abolish it, and to institute new Government, laying its foundation on such principles and organizing its powers in such form, as to them shall seem most likely to effect their Safety and Happiness. Prudence, indeed, will dictate that Governments long established should not be changed for light and transient causes; and accordingly all experience hath shewn, that mankind are more disposed to suffer, while evils are sufferable, than to right themselves by abolishing the forms to which they are accustomed. But when a long train of abuses and usurpations, pursuing invariably the same object evinces a design to reduce them under absolute Despotism, it is their right, it is their duty, to throw off such Government, and to provide new Guards for their future security. ...</p>
+    <p>(<a href='http://www.duke.edu/eng169s2/group1/lex3/hyprdecl.htm'>source</a>)</p>
+  </div>
+</div>
+
+<div id="xf-data-3" class='xf-data'>
+  <div class='xf-content'>
+    <p>"Yet, alas, of what great goods do miserable mortals despoil one another, by their shameful itching for quarrels. How profound an ignorance of their fate overwhelms them, as they have deserved. With what deplorable perverseness do we rush into the midst of the flames, in fleeing from the fire," he [Kepler] wrote in 1621, three years after the eruption of the Thirty Years War.</p>
+    <p>"Would that even now indeed, there may still, after the reversal of Austrian affairs which followed, be a place for Plato's oracular saying. For when Greece was on fire on all sides with a long civil war, and was troubled with all the evils which usually accompany civil war, he was consulted about a Delian Riddle, and was seeking a pretext for suggesting salutary advice to the peoples. At length he replied that, according to Apollo's opinion Greece would be peaceful if the Greeks turned to geometry and other philosophical studies, as these studies would lead their spirits from ambition and other forms of greed, out of which wars and other evils arise, to the love of peace and to moderation in all things."</p>
+    <p>(<a href='http://wlym.com/antidummies/part02.html'>source</a>)</p>
+  </div>
+</div>
+
+<div id="xf-data-4" class='xf-data'>
+  <div class='xf-content'>
+    <h4>End the War on Drugs</h4>
+    <p>We have recently heard many shocking stories of brutal killings and ruthless violence related to drug cartels warring with Mexican and US officials.  It is approaching the fever pitch of a full blown crisis.  Unfortunately, the administration is not likely to waste this opportunity to further expand government.  Hopefully, we can take a deep breath and look at history for the optimal way to deal with this dangerous situation, which is not unprecedented.</p>
+    <p>Alcohol prohibition in the 1920’s brought similar violence, gangs, lawlessness, corruption and brutality.  The reason for the violence was not that making and selling alcohol was inherently dangerous.  The violence came about because of the creation of a brutal black market which also drove profits through the roof.  These profits enabled criminals like Al Capone to become incredibly wealthy, and militantly defensive of that wealth.  Al Capone saw the repeal of Prohibition as a great threat, and indeed smuggling operations and gangland violence fell apart after repeal.  Today, picking up a bottle of wine for dinner is a relatively benign transaction, and beer trucks travel openly and peacefully along their distribution routes.</p>
+    <p>Similarly today, the best way to fight violent drug cartels would be to pull the rug out from under their profits by bringing these transactions out into the sunlight.  People who, unwisely, buy drugs would hardly opt for the back alley criminal dealer as a source, if a coffeehouse-style dispensary was an option.  Moreover, a law-abiding dispensary is likely to check ID’s and refuse sale to minors, as bars and ABC stores tend to do very diligently.  Think of all the time and resources law enforcement could save if they could instead focus on violent crimes, instead of this impossible nanny-state mandate of saving people from themselves!</p>
+    <p>If these reasons don’t convince the drug warriors, I would urge them to go back to the Constitution and consider where there is any authority to prohibit private personal choices like this.  All of our freedoms – the freedom of religion and assembly, the freedom of speech, the right to bear arms, the right to be free from unnecessary government searches and seizures – stem from the precept that you own yourself and are responsible for your own choices.  Prohibition laws negate self-ownership and are an absolute affront to the principles of freedom.  I disagree vehemently with the recreational use of drugs, but at the same time, if people are only free to make good decisions, they are not truly free.  In any case, states should decide for themselves how to handle these issues and the federal government should respect their choices.</p>
+    <p>My great concern is that instead of dealing deliberatively with the actual problems, Congress will be pressed again to act quickly without much thought or debate.  I can’t think of a single problem we haven’t made worse that way.  The panic generated by the looming crisis in Mexico should not be redirected into curtailing more rights, especially our second amendment rights, as seems to be in the works.  Certainly, more gun laws in response to this violence will only serve to disarm lawful citizens.  This is something to watch out for and stand up against.  We have escalated the drug war enough to see it only escalates the violence and profits associated with drugs.  It is time to try freedom instead.</p>
+    <p>(<a href='http://www.house.gov/htbin/blog_inc?BLOG,tx14_paul,blog,999,All,Item%20not%20found,ID=090330_2795,TEMPLATE=postingdetail.shtml'>source</a>)</p>
+  </div>
+</div>
+
+<div id="xf-data-5" class='xf-data'>
+  <div class='xf-content'>
+    <h4>Jefferson Davis' Farewell Address</h4>
+    <p><i>Senate Chamber, U.S. Capitol, January 21, 1861</i></p>
+    <p>...</p>
+    <p>Then, Senators, we recur to the compact which binds us together; we recur to the principles upon which our Government was founded; and when you deny them, and when you deny to us the right to withdraw from a Government which thus perverted threatens to be destructive of our rights, we but tread in the path of our fathers when we proclaim our independence, and take the hazard. This is done not in hostility to others, not to injure any section of the country, not even for our own pecuniary benefit; but from the high and solemn motive of defending and protecting the rights we inherited, and which it is our sacred duty to transmit unshorn to our children.</p>
+    <p>...</p>
+    <p>(<a href='http://jeffersondavis.rice.edu/resources.cfm?doc_id=1507'>source</a>)</p>
+  </div>
+</div>
+
+<div id="xf-data-6" class='xf-data'>
+  <div class='xf-content'>
+  <h4>Divine Metaphysics</h4>
+  <p>Human philosophy has made God manlike. Christian<br>Science makes man Godlike. The first is error; the latter<br>is truth. Metaphysics is above physics, and<br>matter does not enter into metaphysical prem-<br>ises or conclusions. The categories of metaphysics rest<br>on one basis, the divine Mind. Metaphysics resolves<br>things into thoughts, and exchanges the objects of sense<br>for the ideas of Soul.</p>
+  <p>These ideas are perfectly real and tangible to spiritual<br>consciousness, and they have this advantage over the ob-<br>jects and thoughts of material sense, - they are good and<br>eternal.</p>
+  <p>(<a href='http://lineoflight.com/sah/index.php?o=v&m=p&p=269&l=9&n=1'>source</a>)</p>
+</div>
+
+</body>
+</html>

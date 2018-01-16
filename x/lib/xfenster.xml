@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<x_symbol id='xFenster'>
+
+<sources>
+  <src><sym>xFenster</sym><file>xfenster.js</file><note><![CDATA[The default implementation.]]></note></src>
+  <src><sym>xFenster</sym><file>xfenster19.js</file><note><![CDATA[See R19 rev comment.]]></note></src>
+  <src><sym>xFenster2</sym><file>xfenster2.js</file><note><![CDATA[Compatible with xFenster revision 15.]]></note></src>
+</sources>
+
+<copyright>Copyright 2004-2009 Michael Foster (Cross-Browser.com)</copyright>
+<license>Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL</license>
+<groups>
+<grp>UI</grp>
+</groups>
+<type>Object</type>
+
+<description><![CDATA[xFenster takes an existing DIV or IFRAME element and dynamically encloses it in a draggable, resizeable "window" (fenster). If the DIV or IFRAME does not exist xFenster will create it.]]></description>
+
+<syntax>new xFenster(clientId, iniTitle, iniUrl, iniX, iniY, iniW, iniH, miniW, fenceId, conPad, conBor, cliBor,
+             enMove, enResize, enMinimize, enMaximize, enClose, enStatus, enFixed,
+             fnMove, fnResize, fnMinimize, fnMaximize, fnRestore, fnClose, fnFocus, fnLoad,
+             clsCon, clsCli, clsTitlebar, clsTitlebarFocused, clsStatusbar, clsStatusbarFocused,
+             clsResizeIcon, clsMinimizeIcon, clsMaximizeIcon, clsRestoreIcon, clsCloseIcon,
+             txtResize, txtMin, txtMax, txtRestore, txtClose);</syntax>
+
+<parameters>
+<par><name>clientId</name><note><![CDATA[Id string of client element (a DIV or IFRAME). If the element does not exist xFenster will create it. To work cross-browser, this element should not have padding.]]></note></par>
+<par><name>iniTitle</name><note><![CDATA[Initial title for fenster's title bar.]]></note></par>
+<par><name>iniUrl</name><note><![CDATA[Initial url to load into the iframe. If this is not a string it is assumed that the client element is a DIV instead of an IFRAME.]]></note></par>
+<par><name>iniX, iniY</name><note><![CDATA[Initial position of fenster.]]></note></par>
+<par><name>iniW, iniH</name><note><![CDATA[Initial size of fenster.]]></note></par>
+<par><name>miniW</name><note><![CDATA[Width when minimized.]]></note></par>
+<par><name>fenceId</name><note><![CDATA[Id string of fence element. The fenster's move, resize and maximize will be limited to the boundary of the fence element.]]></note></par>
+<par><name>conPad</name><note><![CDATA[Padding applied to container element.]]></note></par>
+<par><name>conBor</name><note><![CDATA[Border size applied to container element.]]></note></par>
+<par><name>cliBor</name><note><![CDATA[Border size applied to client element.]]></note></par>
+<par><name>-</name><note><![CDATA[]]></note></par>
+<par><name>enMove</name><note><![CDATA[boolean - If true, moving (dragging by the titlebar) is enabled, else it is disabled.]]></note></par>
+<par><name>enResize</name><note><![CDATA[boolean - If true, resizing (dragging by the lower-right corner) is enabled, else it is disabled.]]></note></par>
+<par><name>enMinimize</name><note><![CDATA[boolean - If true, the minimize button is enabled, else it is disabled.]]></note></par>
+<par><name>enMaximize</name><note><![CDATA[boolean - If true, the maximize button is enabled, else it is disabled.]]></note></par>
+<par><name>enClose</name><note><![CDATA[boolean - If true, the close button is enabled, else it is disabled.]]></note></par>
+<par><name>enStatus</name><note><![CDATA[boolean - If true, the status bar is enabled, else it is disabled.]]></note></par>
+<par><name>enFixed</name><note><![CDATA[boolean - If true, the outer container is given position:fixed, else (and for IE6 and down) it is given position:absolute.]]></note></par>
+<par><name>-</name><note><![CDATA[]]></note></par>
+<par><name>fnMove</name><note><![CDATA[fnMove(xf, x, y) - Called before xf is moved. x,y is target position of xf's outer container. Return true to allow move, false to cancel.]]></note></par>
+<par><name>fnResize</name><note><![CDATA[fnResize(xf, w, h) - Called before xf is resized. w,h is target size of client element. Return true to allow resize, false to cancel.]]></note></par>
+<par><name>fnMinimize</name><note><![CDATA[fnMinimize(xf) - Called before xf is minimized. Return true to allow minimize, false to cancel.]]></note></par>
+<par><name>fnMaximize</name><note><![CDATA[fnMaximize(xf, w, h) - Called before xf is maximized. w,h is target size of client element. Return true to allow maximize, false to cancel.]]></note></par>
+<par><name>fnRestore</name><note><![CDATA[fnRestore(xf) - Called after xf is restored.]]></note></par>
+<par><name>fnClose</name><note><![CDATA[fnClose(xf) - Called before xf is closed. Return true to allow close, false to cancel.]]></note></par>
+<par><name>fnFocus</name><note><![CDATA[fnFocus(xf) - Called before xf is focused. Return true to allow focus, false to cancel.]]></note></par>
+<par><name>fnLoad</name><note><![CDATA[fnLoad(xf) - Called when iframe finishes loading a page.]]></note></par>
+<par><name>-</name><note><![CDATA[]]></note></par>
+<par><name>clsCon, clsCli</name><note><![CDATA[Class names for outer container and client elements.]]></note></par>
+<par><name>clsTitlebar, clsTitlebarFocused</name><note><![CDATA[Class names for title bar default and focused states.]]></note></par>
+<par><name>clsStatusbar, clsStatusbarFocused</name><note><![CDATA[Class names for status bar default and focused states.]]></note></par>
+<par><name>clsResizeIcon, clsMinimizeIcon, clsMaximizeIcon, clsRestoreIcon, clsCloseIcon</name><note><![CDATA[Class names for icons.]]></note></par>
+<par><name>txtResize, txtMin, txtMax, txtRestore, txtClose</name><note><![CDATA[Text for icon tooltips (the title attribute).]]></note></par>
+</parameters>
+
+<properties>
+<prop><name>con</name><note><![CDATA[The outermost container element.]]></note></prop>
+<prop><name>conW, conH</name><note><![CDATA[Current size of the con element. Set these and call paint(0,0) to resize.]]></note></prop>
+<prop><name>tbar</name><note><![CDATA[The title bar element.]]></note></prop>
+<prop><name>sbar</name><note><![CDATA[The status bar element.]]></note></prop>
+<prop><name>nbtn</name><note><![CDATA[The minimize button element.]]></note></prop>
+<prop><name>mbtn</name><note><![CDATA[The maximize button element.]]></note></prop>
+<prop><name>cbtn</name><note><![CDATA[The close button element.]]></note></prop>
+<prop><name>rbtn</name><note><![CDATA[The resize button element.]]></note></prop>
+<prop><name>client</name><note><![CDATA[The client element contains the fenster's "content". It is a DIV or IFRAME.]]></note></prop>
+<prop><name>maximized</name><note><![CDATA[True if the fenster is maximized.]]></note></prop>
+<prop><name>minimized</name><note><![CDATA[True if the fenster is minimized.]]></note></prop>
+<prop><name>hidden</name><note><![CDATA[True if the fenster is hidden (closed).]]></note></prop>
+<prop><name>isIFrame</name><note><![CDATA[True if the client element is an IFRAME.]]></note></prop>
+</properties>
+
+<methods>
+<meth><name>paint(dw,dh)</name><note><![CDATA[Re-position and re-size all contained elements. dw,dh is added to the outer container's current size.]]></note></meth>
+<meth><name>focus()</name><note><![CDATA[Bring the fenster to "the top" and highlight its title and status bars.]]></note></meth>
+<meth><name>href(url)</name><note><![CDATA[Set or return the contained iframe's "location.href" property.]]></note></meth>
+<meth><name>hide()</name><note><![CDATA[Set the fenster's container to "display:none" and focus the fenster that was previously focused.]]></note></meth>
+<meth><name>show()</name><note><![CDATA[Set the fenster's container to "display:block" and call the fenster's focus method.]]></note></meth>
+<meth><name>status(s)</name><note><![CDATA[Set or return the fenster's statusbar innerHTML.]]></note></meth>
+<meth><name>title(s)</name><note><![CDATA[Set or return the fenster's titlebar innerHTML.]]></note></meth>
+<meth><name>destroy()</name><note><![CDATA[Remove all internal references to the fenster and unregister all event listeners registered by the fenster.]]></note></meth>
+<meth><name>minimize()</name><note><![CDATA[Minimize the fenster.]]></note></meth>
+<meth><name>maximize()</name><note><![CDATA[Maximize the fenster.]]></note></meth>
+<meth><name>restore()</name><note><![CDATA[Restore the fenster.]]></note></meth>
+</methods>
+
+<dependencies>
+<dep>xGetElementById</dep>
+<dep>xPageX</dep>
+<dep>xPageY</dep>
+<dep>xWidth</dep>
+<dep>xResizeTo</dep>
+<dep>xMoveTo</dep>
+<dep>xScrollLeft</dep>
+<dep>xScrollTop</dep>
+<dep>xClientWidth</dep>
+<dep>xClientHeight</dep>
+<dep>xAddEventListener</dep>
+<dep>xRemoveEventListener</dep>
+<dep>xStopPropagation</dep>
+<dep>xEnableDrag</dep>
+</dependencies>
+
+<demos>
+  <demo><url>http://cross-browser.com/x/examples/xfenster.php</url><note><![CDATA[This page has links to many other xFenster demos.]]></note></demo>
+</demos>
+
+<tests>
+  <test><date>24May07</date><author>mf</author><url>http://cross-browser.com/forums/viewtopic.php?id=25</url><note><![CDATA[Forum discussion on xFenster.]]></note></test>
+</tests>
+
+<comments>
+
+  <comment><date>6Aug07</date><author>mf</author><note><![CDATA[
+xFenster Features
+[code]
+- When minimized (or maximized), the minimize (or maximize) icon changes to
+  the restore icon.
+- Resize not allowed when maximized or minimized.
+- You specify the minimized width.
+- Fensters are minimized to the bottom of the viewport.
+- If minimize, maximize or close is disabled the other icons are automatically
+  re-positioned.
+- You specify the title text for the icon tooltips.
+- Icons are children of con and are "on top" of the title and status bars.
+- The title and status methods accept HTML.
+- The status bar is optional.
+- You can have different styles for fensters on the same page.
+- You specify container and client border sizes and container padding.
+- You can specify a fenster to be "fixed" - and then it will not scroll with
+  the page.
+- You can specify a "fence" element. The fenster's move/resize/maximize will
+  be restricted to the boundary of the fence element.
+- To minimize flicker, use default CSS to give con (if static) and client
+  "visibility:hidden". xFenster will change them to "visible" before
+  displaying the fenster.
+[/code]
+  ]]></note></comment>
+
+  <comment><date>30May07</date><author>mf</author><note><![CDATA[
+xFenster has three "static" properties:
+[code]
+- "xFenster.instances" is an object. When an xFenster is created a property is
+  added to the "instances" object which references that xFenster object. The
+  name of the property is the same as the clientId. So you do not have to
+  maintain your own references to xFenster objects.
+- "xFenster.nextZ" is the z-index used to "focus" a fenster.
+- "xFenster.focused" is used to focus the appropriate fenster when a fenster
+  is closed or destroyed.[/code]
+  ]]></note></comment>
+</comments>
+
+<revisions>
+<rev><num>19</num><date>16Feb09</date><author>mf</author><note><![CDATA[R19 is still experimental, see '/x/lib/xfenster19.js'. Arguments are passed as an object and an onDragEnd callback was added.]]></note></rev>
+  <rev><num>18</num><date>29jan09</date><author>mf</author><note><![CDATA[Two assignments to ele.style.borderWidth were not appending 'px'.]]></note></rev>
+  <rev><num>17</num><date>19Aug07</date><author>mf</author><note><![CDATA[There was a typo on line 27. A ')' where it should not have been.]]></note></rev>
+  <rev><num>16</num><date>6Aug07</date><author>mf</author><note><![CDATA[For previous rev history see xFenster2. This rev has many improvements and are documented above.]]></note></rev>
+</revisions>
+
+</x_symbol>

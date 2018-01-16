@@ -1,0 +1,171 @@
+<?xml version="1.0"?>
+<!--
+  x-library-ant-macros.xml v0.1
+  Copyright 2009 Michael Foster (Cross-Browser.com)
+  Distributed under the terms of the GNU LGPL
+
+  These macros provide for a 3 stage build process:
+  1. Resolve library dependencies and aggregate them into one file with XAG.
+  2. Preprocess the file with XPP.
+  3. Compress the file with YUICompressor.
+-->
+
+<project name="x-library-ant-macros">
+
+  <description>Ant macros for building X Library projects.</description>
+
+  <!-- These properties can be overridden in your build script. -->
+  <property name="x.build.dir" value="build"/> <!-- Directory for intermediate files. -->
+  <property name="x.dist.dir" value="."/> <!-- Directory in which to place "prjname.js". -->
+  <property name="x.xag.exe" value="xc/xag"/> <!-- Pathname of XAG executable file. -->
+  <property name="x.xag.lib" value="lib/"/> <!-- Directory containing X Library files. Requires a trailing slash. -->
+  <property name="x.xpp.exe" value="xc/xpp"/> <!-- Pathname of XPP executable file. -->
+  <property name="x.cmp.jar" value="/Program Files/yuicompressor/yuicompressor-2.4.2/build/yuicompressor-2.4.2.jar"/>
+
+  <!-- Initialize - prepare to build a project.
+    To build a project you must first call the x-initialize macro. It creates
+    project-specific properties; creates the build directory if not present;
+    and deletes old build files for the current project if present.
+  -->
+  <macrodef name="x-initialize">
+    <attribute name="prj"/>
+    <sequential>
+      <!-- Create project-specific file name properties. They must not be overridden. -->
+      <property name="x.@{prj}.prj.out" value="${x.dist.dir}/@{prj}.js"/>
+      <property name="x.@{prj}.xag.cfg" value="${x.build.dir}/@{prj}.xag"/>
+      <property name="x.@{prj}.xag.sym" value="${x.build.dir}/@{prj}.sym"/>
+      <property name="x.@{prj}.xag.out" value="${x.build.dir}/@{prj}.xago"/>
+      <property name="x.@{prj}.xpp.out" value="${x.build.dir}/@{prj}.xppo"/>
+      <echo message="Building X Library: ${x.@{prj}.prj.out}"/>
+      <!-- Prepare the build directory. -->
+      <mkdir dir="${x.build.dir}"/>
+      <delete>
+        <fileset dir="${x.build.dir}" includes="@{prj}.*"/>
+      </delete>
+    </sequential>
+  </macrodef>
+
+  <!-- Aggregate - create a custom X Library file.
+    This macro creates a XAG configuration file using the values of its attributes.
+    An optional list of symbols can be provided as the contents of the x-aggregate
+    element. This text is saved in a file and fed to XAG as another app file.
+    The default XAG options are for building application-specific libraries with
+    application code not included ("-app +dep"). When building general purpose
+    libraries, use options="-app -dep".
+    This stage is required.
+  -->
+  <macrodef name="x-aggregate">
+    <attribute name="prj"/>
+    <attribute name="input" default="x.emptyfilelist"/>
+    <attribute name="output" default="${x.@{prj}.xag.out}"/>
+    <attribute name="options" default="-app +dep"/>
+    <attribute name="libpath" default="${x.xag.lib}"/>
+    <text name="symbols" optional="true"/>
+    <sequential>
+      <!-- Create config file. -->
+      <pathconvert refid="@{input}" property="x.@{input}.xag.files" setonempty="true" pathsep="${line.separator}"/>
+      <echo file="${x.@{prj}.xag.cfg}" append="false">; @{prj}
+options @{options}
+output @{output}
+libpath @{libpath}
+appfiles
+${x.@{prj}.xag.sym}
+${x.@{input}.xag.files}</echo>
+      <!-- Create symbols file. -->
+      <echo file="${x.@{prj}.xag.sym}" append="false">@{symbols}</echo>
+      <!-- Run XAG. -->
+      <apply executable="${x.xag.exe}" relative="true" parallel="true" failonerror="true">
+        <srcfile/>
+        <filelist dir="." files="${x.@{prj}.xag.cfg}"/> 
+      </apply>
+    </sequential>
+  </macrodef>
+
+  <!-- Preprocess - preprocess the project with XPP.
+    The input to this stage is the output from x-aggregate as well as an optional
+    file-type resource collection. The files from the resource collection are
+    preprocessed "before" the x-aggregate output file is preprocessed. This stage
+    is optional.
+  -->
+  <macrodef name="x-preprocess">
+    <attribute name="prj"/>
+    <attribute name="input" default="x.emptyfilelist"/>
+    <attribute name="output" default="${x.@{prj}.xpp.out}"/>
+    <sequential>
+      <!-- Run XPP. -->
+      <apply executable="${x.xpp.exe}" relative="true" parallel="true" failonerror="true">
+        <arg value="@{output}"/> <!-- output -->
+        <!-- input -->
+        <srcfile/>
+        <resources refid="@{input}"/>
+        <arg value="${x.@{prj}.xag.out}"/>
+      </apply>
+      <!-- Set a flag indicating last output file is from x-preprocess. -->
+      <property name="x.@{prj}.is-preprocessed" value="true"/>
+    </sequential>
+  </macrodef>
+
+  <!-- Compress. - compress the project with YUICompressor.
+    The input to this stage is the output from either x-aggregate or x-preprocess
+    as well as an optional file-type resource collection. The files from the
+    resource collection are compressed "after" the last output file is compressed.
+    This stage is optional.
+  -->
+  <macrodef name="x-compress">
+    <attribute name="prj"/>
+    <attribute name="input" default="x.emptyfilelist"/>
+    <attribute name="output" default="${x.@{prj}.prj.out}"/>
+    <sequential>
+      <echo message="Compressing to @{output}"/>
+      <x-get-last-output prj="@{prj}" property="x.@{prj}.cmp.in"/>
+      <!-- Run YUICompressor. -->
+      <apply executable="java" relative="true" parallel="true" failonerror="true">
+        <arg value="-jar"/>
+        <arg value="${x.cmp.jar}"/>
+        <!-- <arg value="-v"/> --> <!-- verbose -->
+        <arg value="--type"/>
+        <arg value="js"/>
+        <arg value="-o"/>
+        <arg value="@{output}"/> <!-- output -->
+        <!-- input -->
+        <arg value="${x.@{prj}.cmp.in}"/>
+        <srcfile/>
+        <resources refid="@{input}"/>
+      </apply>
+    </sequential>
+  </macrodef>
+
+  <!-- Finalize - copy the last output file to x.dist.dir.
+    Call this last, but only if you did not x-compress.
+  -->
+  <macrodef name="x-finalize">
+    <attribute name="prj"/>
+    <sequential>
+      <echo message="Copying to @{output}"/>
+      <x-get-last-output prj="@{prj}" property="x.@{prj}.fin.in"/> <!-- input -->
+      <copy file="${x.@{prj}.fin.in}" tofile="${x.@{prj}.prj.out}"/>
+    </sequential>
+  </macrodef>
+
+  <!-- Private Macros -->
+
+  <!-- Get Last Output.
+    Determine if the last output file was from x-aggregate or x-preprocess and
+    assign its pathname to the property given in the "property" attribute.
+  -->
+  <macrodef name="x-get-last-output">
+    <attribute name="prj"/>
+    <attribute name="property"/>
+    <sequential>
+      <condition property="@{property}" value="${x.@{prj}.xpp.out}" else="${x.@{prj}.xag.out}">
+        <isset property="x.@{prj}.is-preprocessed"/>
+      </condition>
+    </sequential>
+  </macrodef>
+
+  <!--
+    Used as a default input attribute.
+  -->
+  <filelist id="x.emptyfilelist" files=""/>
+
+</project>

@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<!--
+  build.xml v0.1
+  Copyright 2009 Michael Foster (Cross-Browser.com)
+  Distributed under the terms of the GNU LGPL
+
+  This build file is intended to reside in the "cross-browser.com/x"
+  directory and assumes "x-library-ant-macros.xml" to be in the same.
+-->
+
+<project name="x-library-ant-build" default="help" basedir=".">
+
+  <import file="x-library-ant-macros.xml"/>
+
+                                   <!-- * -->
+
+  <!-- Build all library files. -->
+  <target name="all" depends="lib, app" description="Build all library files."/>
+
+  <!-- Build all general-purpose library files. -->
+  <target name="lib" depends="x, x_core, x_event" description="Build all general-purpose library files."/>
+
+  <!-- Build all application-specific library files. -->
+  <target name="app" depends="xthf" description="Build all application-specific library files."/>
+
+  <target name="help">
+    <fail message="You must specify a target. Try 'ant -projecthelp'."/>
+  </target>
+
+                                   <!-- * -->
+
+  <!--
+    This general-purpose library file contains some of the most used X functions.
+  -->
+  <target name="x" description="Build 'x.js'.">
+    <x-initialize prj="x"/>
+    <x-aggregate prj="x" options="-app -dep">
+      xGetElementById, xGetElementsByTagName, xGetElementsByClassName,
+      xMoveTo, xLeft, xTop, xPageX, xPageY, xScrollLeft, xScrollTop, xHasPoint,
+      xResizeTo, xWidth, xHeight, xClientWidth, xClientHeight,
+      xStyle, xOpacity, xGetComputedStyle, xCamelize,
+      xDef, xStr, xNum, xLibrary,
+      xEachId, xEachNum, xOffset,
+      xAddEventListener, xRemoveEventListener, xEvent, xStopPropagation and xPreventDefault.
+    </x-aggregate>
+    <x-compress prj="x"/>
+  </target>
+
+  <!--
+    The x_core library file is deprecated. Please use "x.js".
+  -->
+  <target name="x_core" description="Build 'x_core.js'.">
+    <x-initialize prj="x_core"/>
+    <x-aggregate prj="x_core" options="-app -dep">
+      xGetElementById, xGetElementsByTagName, xGetElementsByClassName,
+      xMoveTo, xLeft, xTop, xPageX, xPageY, xScrollLeft, xScrollTop, xHasPoint,
+      xResizeTo, xWidth, xHeight, xClientWidth, xClientHeight,
+      xStyle, xOpacity, xGetComputedStyle, xCamelize,
+      xDef, xStr, xNum, xLibrary,
+    </x-aggregate>
+    <x-compress prj="x_core"/>
+  </target>
+
+  <!--
+    The x_event library file is deprecated. Please use "x.js".
+  -->
+  <target name="x_event" description="Build 'x_event.js'.">
+    <x-initialize prj="x_event"/>
+    <x-aggregate prj="x_event" options="-app -dep">
+      xAddEventListener, xRemoveEventListener, xEvent, xStopPropagation and xPreventDefault.
+    </x-aggregate>
+    <x-compress prj="x_event"/>
+  </target>
+
+  <!--
+    This is an example of building an application-specific library file which
+    is not compressed.
+  -->
+  <target name="xthf" description="Build 'xthf.js'.">
+    <x-initialize prj="xthf"/>
+    <filelist id="xthf-xag-files" dir="${basedir}/examples">
+      <file name="xthf1.php"/> 
+      <file name="xthf2.php"/> 
+    </filelist>
+    <x-aggregate prj="xthf" input="xthf-xag-files"/>
+    <x-preprocess prj="xthf" input="obf-demo"/>
+    <!--<x-compress prj="xthf"/>-->
+    <x-finalize prj="xthf"/>
+  </target>
+
+                                   <!-- * -->
+
+  <!--
+    This is used in the examples of using x-preprocess to implement obfuscation.
+  -->
+  <filelist id="obf-demo" dir="${basedir}" files="obf-demo.xpp"/>
+
+                                   <!-- * -->
+
+  <target name="debug">
+    <echoproperties/>
+  </target>
+
+<!-- Notes.
+
+    You can pass the ID of any file-type resource collection (<resources>, <files>,
+    <filelist> or <fileset>) as the input attribute to x-aggregate, x-preprocess
+    or x-compress. However, <fileset> and <files> do not allow you to control the
+    order in which the files are included. Using <resources> (and it seems,
+    <filelist> also), you can control the order in which the files are included.
+    
+-->
+
+</project>

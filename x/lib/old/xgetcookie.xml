@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<x_symbol id='xGetCookie'>
+
+<sources>
+  <src><file>xgetcookie.js</file><note><![CDATA[Default.]]></note></src>
+</sources>
+
+<copyright>Copyright 2001-2009 Michael Foster (Cross-Browser.com)</copyright>
+<license>Part of X, a Cross-Browser Javascript Library, Distributed under the terms of the GNU LGPL</license>
+<groups>
+  <grp>Misc</grp>
+</groups>
+<type>Function</type>
+
+<description><![CDATA[Get a cookie value]]></description>
+
+<syntax>xGetCookie(sName)</syntax>
+
+<parameters>
+  <par>
+    <name>sName</name>
+    <note><![CDATA[string]]></note>
+  </par>
+</parameters>
+
+<return>string</return>
+
+<demos>
+  <demo>
+    <url>http://cross-browser.com/toys/</url>
+    <note><![CDATA[Index of all X demos.]]></note>
+  </demo>
+</demos>
+
+<comments>
+  <comment><date>6May09</date><author>mf</author><note><![CDATA[This function has a bug. This, and its related set/delete functions are now DEPRECATED. See: xCookie. See: http://cross-browser.com/forums/viewtopic.php?id=504]]></note></comment>
+</comments>
+
+<revisions>
+  <rev><num>2</num><date>6Mar09</date><author>mf</author><note><![CDATA[Combined multiple var statements into one.]]></note></rev>
+  <rev><num>1</num><date></date><author>mf</author><note><![CDATA[initial implementation based on code from Netscape Javascript Guide]]></note></rev>
+</revisions>
+
+</x_symbol>
